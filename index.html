@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Librarian Pro - Dark Mode Default</title>
+    <title>PDF Librarian Pro - Bookmark Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
         :root {
@@ -11,7 +11,6 @@
             --text: #1e293b; --primary: #3b82f6; --border: #e2e8f0;
             --modal-bg: rgba(15, 23, 42, 0.96); 
         }
-        /* Dark Mode variables are active by default now */
         body.dark-mode {
             --bg: #0f172a; --card: #1e293b; --header: #1e293b;
             --text: #f8fafc; --primary: #60a5fa; --border: #334155;
@@ -33,26 +32,14 @@
         .modal-container { display: grid; grid-template-columns: 380px 1fr; width: 100%; height: 92vh; background: var(--card); border-radius: 12px; overflow: hidden; }
 
         .sidebar { background: var(--bg); border-right: 2px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
-        
         .sidebar-tools { padding: 10px; border-bottom: 1px solid var(--border); background: var(--card); position: relative; }
         .search-wrapper { position: relative; display: flex; align-items: center; }
         #pdfSearch { width: 100%; padding: 8px 30px 8px 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; background: #fff; color: #000; }
         
-        .clear-search { 
-            position: absolute; right: 10px; cursor: pointer; color: #94a3b8; font-weight: bold; font-size: 16px; 
-            display: none; user-select: none;
-        }
-        .clear-search:hover { color: #ef4444; }
+        .clear-search { position: absolute; right: 10px; cursor: pointer; color: #94a3b8; font-weight: bold; font-size: 16px; display: none; }
 
-        .search-results { 
-            padding: 5px 0; max-height: 250px; overflow-y: auto; 
-            background: #1e293b; border-bottom: 2px solid var(--primary);
-        }
-        .res-item { 
-            padding: 10px 15px; cursor: pointer; color: #60a5fa !important; 
-            font-weight: bold; border-bottom: 1px solid #334155; font-size: 12px;
-        }
-        .res-item:hover { background: #334155; color: #ffffff !important; }
+        .search-results { padding: 5px 0; max-height: 250px; overflow-y: auto; background: #1e293b; border-bottom: 2px solid var(--primary); }
+        .res-item { padding: 10px 15px; cursor: pointer; color: #60a5fa !important; font-weight: bold; border-bottom: 1px solid #334155; font-size: 12px; }
 
         .toc-list { flex: 1; overflow-y: auto; padding: 10px; }
         .toc-row { display: flex; align-items: center; padding: 6px; cursor: pointer; font-size: 11px; }
@@ -70,9 +57,18 @@
         .close-modal { position: absolute; top: 0; right: 20px; font-size: 45px; color: white; cursor: pointer; }
         input, select { padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 12px; }
         .btn-action { padding: 8px 15px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; }
+        
+        /* BOOKMARK TOAST */
+        #bookmark-status { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--accent, #10b981); color: white; padding: 10px 20px;
+            border-radius: 30px; font-size: 12px; display: none; z-index: 2000;
+        }
     </style>
 </head>
 <body class="dark-mode">
+
+<div id="bookmark-status">Resumed from your last visit!</div>
 
 <header>
     <div style="font-size: 22px; font-weight: 800;">📚 PDF Librarian Pro</div>
@@ -109,7 +105,7 @@
             </div>
             <div id="toc-box" class="toc-list"></div>
         </div>
-        <div class="viewer" id="viewer-main">
+        <div class="viewer" id="viewer-main" onscroll="trackScroll()">
             <div id="pdf-stack" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
         </div>
     </div>
@@ -121,8 +117,8 @@
 
     let filesData = [];
     let currentPdf = null;
+    let currentFileName = "";
 
-    // Theme Toggle Logic
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
         document.getElementById('themeToggle').innerText = isDark ? '☀️' : '🌙';
@@ -158,6 +154,7 @@
 
     async function openDoc(item) {
         currentPdf = item.doc;
+        currentFileName = item.name;
         document.getElementById('modal').style.display = 'block';
         document.getElementById('pdf-stack').innerHTML = '';
         const box = document.getElementById('toc-box');
@@ -174,8 +171,37 @@
             canvas.height = vp.height; canvas.width = vp.width;
             wrap.appendChild(canvas);
             document.getElementById('pdf-stack').appendChild(wrap);
-            page.render({ canvasContext: canvas.getContext('2d'), viewport: vp });
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         }
+
+        // AUTO-RESUME FEATURE
+        const savedPage = localStorage.getItem('bookmark-' + currentFileName);
+        if (savedPage) {
+            setTimeout(() => {
+                navigateToPage(parseInt(savedPage));
+                showToast();
+            }, 500);
+        }
+    }
+
+    function trackScroll() {
+        if (!currentFileName) return;
+        const viewer = document.getElementById('viewer-main');
+        const wrappers = document.querySelectorAll('.page-wrapper');
+        let currentPage = 1;
+        
+        wrappers.forEach((el, idx) => {
+            if (el.offsetTop <= (viewer.scrollTop + 100)) {
+                currentPage = idx + 1;
+            }
+        });
+        localStorage.setItem('bookmark-' + currentFileName, currentPage);
+    }
+
+    function showToast() {
+        const t = document.getElementById('bookmark-status');
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
     }
 
     async function buildToC(items, container) {
@@ -278,7 +304,7 @@
         });
     }
 
-    function closeModal() { document.getElementById('modal').style.display = 'none'; clearInternalSearch(); }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; clearInternalSearch(); currentFileName = ""; }
 </script>
 </body>
 </html>
