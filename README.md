@@ -13,6 +13,7 @@ A high-performance, browser-based PDF management tool. This app runs entirely in
 
 | Version | Feature / Problem | Resolution | Date |
 | :--- | :--- | :--- | :--- |
+| **v1.9** | **Sorting Request** | Added Sort By dropdown (Filename, Size, Pages). | 2026-02-19 |
 | **v1.8** | **Layout & Filters** | Fixed bottom dead space and restored Page/Size filters for large document handling. | 2026-02-19 |
 | **v1.7** | **PDF View Scaling** | Implemented **Auto-Fit Width** to prevent horizontal scrolling and text cutoff. | 2026-02-19 |
 | **v1.6** | **Bookmarking** | Integrated `localStorage` to save and resume reading positions automatically. | 2026-02-19 |
