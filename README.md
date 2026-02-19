@@ -1,23 +1,24 @@
-# pdf-librarian-pro
 # 📚 PDF Librarian Pro
 
-A lightweight, browser-based PDF management tool designed for organizing and searching local document collections. 
+A high-performance, browser-based PDF management tool. This app runs entirely in your browser, keeping your documents private while providing a robust interface for reading and organization.
 
-## 🚀 Features
-- **Hierarchical Table of Contents:** Nested chapters with collapsible headings.
-- **Precision Navigation:** Clicking a chapter or search result aligns the page perfectly to the top of the viewer.
-- **Advanced Search:** Find keywords across the entire document with real-time highlighting.
-- **Library Filters:** Filter your collection by file size or page count.
-- **Dark Mode Default:** Optimized for late-night reading sessions.
+## 🚀 Key Features
+- **Auto-Fit Display:** Dynamic scaling ensures text is never cut off, regardless of screen size.
+- **Smart Bookmarking:** Automatically resumes from the last page you viewed for every document.
+- **Hierarchical ToC:** Full support for nested chapters and sub-sections.
+- **Library Intelligence:** Filter your collection by file size and page count to find what you need instantly.
+- **Dark Mode:** Optimized for high-contrast, low-strain reading.
 
-## 🛠 How to Use
-1. Open `index.html` in any modern web browser.
-2. Click **📂 Open Folder** and select the folder containing your PDFs.
-3. Use the search bar in the sidebar to find specific terms within the active book.
+## 📝 Project Change Log
 
-## 📝 Change Log
-| Version | Feature | Date |
-| :--- | :--- | :--- |
-| v1.5 | Dark Mode Default & UI Polish | 2026-02-19 |
-| v1.4 | Search Visibility Fix & Clear Button | 2026-02-19 |
-| v1.3 | Nested ToC & Precision Scrolling | 2026-02-19 |
+| Version | Feature / Problem | Resolution | Date |
+| :--- | :--- | :--- | :--- |
+| **v1.8** | **Layout & Filters** | Fixed bottom dead space and restored Page/Size filters for large document handling. | 2026-02-19 |
+| **v1.7** | **PDF View Scaling** | Implemented **Auto-Fit Width** to prevent horizontal scrolling and text cutoff. | 2026-02-19 |
+| **v1.6** | **Bookmarking** | Integrated `localStorage` to save and resume reading positions automatically. | 2026-02-19 |
+| **v1.5** | **UI Overhaul** | Set Dark Mode as default and improved search result visibility. | 2026-02-19 |
+
+## 🛠 Usage
+1. Open the [Live App Link](INSERT_YOUR_GITHUB_PAGES_LINK_HERE).
+2. Click **📂 Open Folder** to select your local PDF directory.
+3. Your books will appear in the grid; click any cover to start reading!
